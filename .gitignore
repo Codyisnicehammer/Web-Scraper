@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# Xcode build artifacts
+build/
+DerivedData/
+*.xcuserstate
+*.xcuserdatad/
+
+# Exported / archived app builds
+*.app/
+SQL Python Learning */
