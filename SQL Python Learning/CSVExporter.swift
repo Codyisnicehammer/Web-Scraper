@@ -37,9 +37,16 @@ struct CSVExporter {
                 NSLocalizedDescriptionKey: "Could not locate Downloads folder"
             ])
         }
+        return try save(csv: csv, filename: filename, to: downloadsURL)
+    }
 
+    /// Saves a CSV string to a user-chosen folder.
+    /// Existing files are never overwritten — a numeric suffix is added instead.
+    /// Returns the URL of the saved file.
+    @discardableResult
+    static func save(csv: String, filename: String, to directory: URL) throws -> URL {
         let sanitized = sanitizeFilename(filename)
-        var targetURL = downloadsURL.appendingPathComponent(sanitized)
+        var targetURL = directory.appendingPathComponent(sanitized)
 
         // Avoid overwriting existing files
         var counter = 1
@@ -47,7 +54,7 @@ struct CSVExporter {
         let ext = (sanitized as NSString).pathExtension
         while FileManager.default.fileExists(atPath: targetURL.path) {
             let newName = "\(nameWithoutExt) (\(counter)).\(ext)"
-            targetURL = downloadsURL.appendingPathComponent(newName)
+            targetURL = directory.appendingPathComponent(newName)
             counter += 1
         }
 

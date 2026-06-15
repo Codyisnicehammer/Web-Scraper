@@ -1,5 +1,6 @@
 import SwiftUI
 import WebKit
+import AppKit
 
 // MARK: - WebView Bridge for SwiftUI
 
@@ -276,7 +277,7 @@ struct ContentView: View {
             Spacer()
 
             if showExportSuccess {
-                Label("Saved to Downloads", systemImage: "checkmark.circle.fill")
+                Label("Saved to \(lastExportPath)", systemImage: "checkmark.circle.fill")
                     .foregroundStyle(.green)
                     .font(.callout)
             }
@@ -328,21 +329,24 @@ struct ContentView: View {
     private func exportTables(_ tablesToExport: [ParsedTable]) {
         guard !tablesToExport.isEmpty else { return }
 
+        // Ask the user where to save. Choosing a folder grants the sandbox
+        // write access to that location.
+        guard let destination = chooseExportFolder(fileCount: tablesToExport.count) else { return }
+
         // Capture the data we need before going off the main thread
         let snapshots = tablesToExport.map { (title: $0.title, headers: $0.headers, rows: $0.rows) }
 
         Task.detached(priority: .userInitiated) {
             do {
-                var lastURL: URL?
                 for snapshot in snapshots {
                     let table = ParsedTable(title: snapshot.title, headers: snapshot.headers, rows: snapshot.rows)
                     let csv = CSVExporter.generateCSV(from: table)
-                    lastURL = try CSVExporter.saveToDownloads(csv: csv, filename: snapshot.title)
+                    try CSVExporter.save(csv: csv, filename: snapshot.title, to: destination)
                 }
 
-                let finalPath = lastURL?.lastPathComponent ?? ""
+                let folderName = destination.lastPathComponent
                 await MainActor.run {
-                    lastExportPath = finalPath
+                    lastExportPath = folderName
                     showExportSuccess = true
                 }
 
@@ -356,6 +360,20 @@ struct ContentView: View {
                 }
             }
         }
+    }
+
+    /// Presents a folder-chooser panel and returns the selected directory, or nil if cancelled.
+    private func chooseExportFolder(fileCount: Int) -> URL? {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.allowsMultipleSelection = false
+        panel.canCreateDirectories = true
+        panel.prompt = "Export Here"
+        panel.message = "Choose a folder to save the CSV file\(fileCount == 1 ? "" : "s")"
+        panel.directoryURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first
+
+        return panel.runModal() == .OK ? panel.url : nil
     }
 }
 
