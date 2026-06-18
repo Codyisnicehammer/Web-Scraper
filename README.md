@@ -4,6 +4,16 @@ A native macOS app that pulls HTML tables off any web page and exports them as C
 
 Built for getting to data quickly: sports stats, reference tables, anything rendered as an HTML `<table>`.
 
+## Have you ever…
+
+…tried to copy a nice clean table off a website into Excel, only to watch it paste as one cursed column of mush with everything jammed together? 😩
+
+…decided to "do it properly" with Python and Beautiful Soup — then spent 45 minutes installing things, 20 more fighting `pip` errors, discovered the table loads with JavaScript so your scraper sees nothing, and finally just… retyped all the numbers by hand like it's 1997?
+
+…highlighted a table, pressed ⌘C, closed your eyes, and *prayed*?
+
+Yeah. Same. **That's why this exists.** Paste the URL, click a button, get your CSV. No mush, no `pip`, no praying.
+
 ## Who it's for
 
 This is for the **data analyst (or student, researcher, or hobbyist) who just wants the data** — fast, without writing or debugging scraping code.
