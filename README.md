@@ -38,6 +38,16 @@ Instead of downloading raw HTML and parsing it (the Beautiful Soup approach), th
 - **Safe saves** — never overwrites an existing file (adds a numeric suffix instead)
 - **Optional web preview** — toggle a live view of the page while it loads
 
+## Built with
+
+- **Swift** — the language the entire app is written in
+- **SwiftUI** — the user interface (URL bar, table list, preview, export controls)
+- **JavaScript** — a small script injected into the loaded page to read tables out of the rendered DOM
+- **WebKit (`WKWebView`)** — the embedded browser engine that loads pages and runs their JavaScript
+- **AppKit / Foundation** — macOS system integration (windowing, file saving)
+
+In short: a native Swift/SwiftUI macOS app, with a touch of JavaScript doing the actual table extraction inside the page.
+
 ## Requirements
 
 - macOS (Apple Silicon or Intel)
