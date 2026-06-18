@@ -94,7 +94,9 @@ Practically: lighter on your battery and fans than keeping a browser full of tab
 
 Both formats hold the same data — the difference is how cleanly they *open*, especially in **Excel for Mac**.
 
-**The Excel-for-Mac quirk:** a `.csv` is just text with commas, so Excel has to *guess* where the columns are when you double-click it. Excel for Windows guesses correctly (it uses your system's list separator). **Excel for Mac often guesses wrong** and dumps the whole row into a single column — the "cursed column of mush." That's a long-standing Excel-for-Mac limitation, not a problem with the file. (Numbers and Google Sheets open the same CSV fine.)
+**The Excel-for-Mac quirk:** a `.csv` is just text with commas, so Excel has to *guess* where the columns are when you double-click it. Excel for Windows guesses correctly (it uses your system's list separator). **Excel for Mac often guesses wrong** and dumps the whole row into a single column — the "cursed column of mush." That's a long-standing Excel-for-Mac limitation, not a problem with the file.
+
+Ironically, **Apple's own Numbers opens the very same CSV perfectly** — columns split cleanly, no fuss — as does Google Sheets. So it's specifically *Microsoft's* Excel for Mac that trips over a plain-text file that everything else (including Excel for Windows) reads just fine. 🤷
 
 A `.xlsx`, by contrast, stores every value in an **explicitly defined cell** — there's no delimiter to guess. So it opens with columns intact, identically, everywhere.
 
