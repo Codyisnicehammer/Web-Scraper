@@ -4,6 +4,12 @@ A native macOS app that pulls HTML tables off any web page and exports them as C
 
 Built for getting to data quickly: sports stats, reference tables, anything rendered as an HTML `<table>`.
 
+## Screenshots
+
+| Paste a URL to start | Tables extracted, ready to export |
+| --- | --- |
+| ![Empty state](screenshots/empty-state.png) | ![Results](screenshots/results.png) |
+
 ## How it works
 
 Instead of downloading raw HTML and parsing it (the Beautiful Soup approach), the app loads the page in a real browser engine (`WKWebView`), lets the page's JavaScript run, and then reads the tables straight out of the rendered DOM. This means it handles modern sites that build their tables with JavaScript after the page loads — which trips up traditional scrapers.
