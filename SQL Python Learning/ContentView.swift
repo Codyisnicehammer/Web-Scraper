@@ -126,7 +126,7 @@ struct ContentView: View {
             Text("No Tables Yet")
                 .font(.title2)
                 .foregroundStyle(.secondary)
-            Text("Paste a URL and click Fetch Tables to extract\nHTML tables and export them as CSV files.")
+            Text("Paste a URL and click Fetch Tables to extract\nHTML tables and export them as CSV or Excel files.")
                 .font(.body)
                 .foregroundStyle(.tertiary)
                 .multilineTextAlignment(.center)
@@ -264,15 +264,15 @@ struct ContentView: View {
             }
             .disabled(tables.isEmpty)
 
-            Button("Export Selected (\(selectedCount))") {
+            Button("Export CSV (\(selectedCount))") {
                 exportTables(tables.filter(\.isSelected))
             }
             .disabled(selectedCount == 0)
 
-            Button("Export All") {
-                exportTables(tables)
+            Button("Export Excel (\(selectedCount))") {
+                exportExcel(tables.filter(\.isSelected))
             }
-            .disabled(tables.isEmpty)
+            .disabled(selectedCount == 0)
 
             Spacer()
 
@@ -362,6 +362,38 @@ struct ContentView: View {
         }
     }
 
+    /// Exports the given tables as a single .xlsx workbook (one sheet per table).
+    /// Uses the same folder-picker flow as CSV export (NSOpenPanel), which is
+    /// the sandbox-friendly path that works reliably in this app.
+    private func exportExcel(_ tablesToExport: [ParsedTable]) {
+        guard !tablesToExport.isEmpty else { return }
+
+        // Ask the user for a destination folder (grants sandbox write access).
+        guard let destination = chooseExportFolder(fileCount: 1) else { return }
+
+        let snapshots = tablesToExport.map { (title: $0.title, headers: $0.headers, rows: $0.rows) }
+        let workbookName = tablesToExport.count == 1 ? tablesToExport[0].title : "Web Stats Export"
+
+        Task.detached(priority: .userInitiated) {
+            do {
+                let tables = snapshots.map { ParsedTable(title: $0.title, headers: $0.headers, rows: $0.rows) }
+                let savedURL = try XLSXExporter.save(tables: tables, filename: workbookName, to: destination)
+
+                let name = savedURL.lastPathComponent
+                await MainActor.run {
+                    lastExportPath = name
+                    showExportSuccess = true
+                }
+                try? await Task.sleep(for: .seconds(4))
+                await MainActor.run { showExportSuccess = false }
+            } catch {
+                await MainActor.run {
+                    fetchState = .error("Excel export failed: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
     /// Presents a folder-chooser panel and returns the selected directory, or nil if cancelled.
     private func chooseExportFolder(fileCount: Int) -> URL? {
         let panel = NSOpenPanel()
@@ -370,7 +402,7 @@ struct ContentView: View {
         panel.allowsMultipleSelection = false
         panel.canCreateDirectories = true
         panel.prompt = "Export Here"
-        panel.message = "Choose a folder to save the CSV file\(fileCount == 1 ? "" : "s")"
+        panel.message = "Choose a folder to save the exported file\(fileCount == 1 ? "" : "s")"
         panel.directoryURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first
 
         return panel.runModal() == .OK ? panel.url : nil
