@@ -264,12 +264,17 @@ struct ContentView: View {
             }
             .disabled(tables.isEmpty)
 
-            Button("Export Selected (\(selectedCount))") {
+            Button("Export CSV (\(selectedCount))") {
                 exportTables(tables.filter(\.isSelected))
             }
             .disabled(selectedCount == 0)
 
-            Button("Export All") {
+            Button("Export Excel (\(selectedCount))") {
+                exportExcel(tables.filter(\.isSelected))
+            }
+            .disabled(selectedCount == 0)
+
+            Button("Export All (CSV)") {
                 exportTables(tables)
             }
             .disabled(tables.isEmpty)
@@ -360,6 +365,61 @@ struct ContentView: View {
                 }
             }
         }
+    }
+
+    /// Exports the given tables as a single .xlsx workbook (one sheet per table).
+    private func exportExcel(_ tablesToExport: [ParsedTable]) {
+        guard !tablesToExport.isEmpty else { return }
+
+        // Ask the user where to save the workbook. Picking a file location
+        // grants the sandbox write access to it.
+        let defaultName = tablesToExport.count == 1
+            ? tablesToExport[0].title
+            : "Web Stats Export"
+        guard let destination = chooseExcelSaveLocation(defaultName: defaultName) else { return }
+
+        let snapshots = tablesToExport.map { (title: $0.title, headers: $0.headers, rows: $0.rows) }
+
+        Task.detached(priority: .userInitiated) {
+            do {
+                let tables = snapshots.map { ParsedTable(title: $0.title, headers: $0.headers, rows: $0.rows) }
+                let data = XLSXExporter.generateWorkbook(from: tables)
+                try data.write(to: destination, options: .atomic)
+
+                let name = destination.lastPathComponent
+                await MainActor.run {
+                    lastExportPath = name
+                    showExportSuccess = true
+                }
+                try? await Task.sleep(for: .seconds(4))
+                await MainActor.run { showExportSuccess = false }
+            } catch {
+                await MainActor.run {
+                    fetchState = .error("Excel export failed: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+    /// Presents a save panel for an .xlsx file and returns the chosen URL, or nil if cancelled.
+    private func chooseExcelSaveLocation(defaultName: String) -> URL? {
+        let panel = NSSavePanel()
+        panel.canCreateDirectories = true
+        panel.prompt = "Export"
+        panel.message = "Save the tables as an Excel workbook"
+        panel.nameFieldStringValue = sanitizedExcelName(defaultName)
+        panel.directoryURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first
+        return panel.runModal() == .OK ? panel.url : nil
+    }
+
+    /// Strips unsafe characters and ensures a .xlsx extension for the suggested filename.
+    private func sanitizedExcelName(_ name: String) -> String {
+        let unsafe = CharacterSet(charactersIn: "/\\:*?\"<>|")
+        var n = name.components(separatedBy: unsafe).joined(separator: "-")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        if n.isEmpty { n = "Web Stats Export" }
+        if !n.lowercased().hasSuffix(".xlsx") { n += ".xlsx" }
+        return n
     }
 
     /// Presents a folder-chooser panel and returns the selected directory, or nil if cancelled.
