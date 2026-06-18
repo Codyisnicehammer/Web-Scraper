@@ -1,6 +1,6 @@
 # Web Stats Scraper
 
-A native macOS app that pulls HTML tables off any web page and exports them as CSV — no Python, no Beautiful Soup, no code. Paste a URL, click **Fetch Tables**, pick the tables you want, and save them as spreadsheets.
+A native macOS app that pulls HTML tables off any web page and exports them as **CSV or Excel (.xlsx)** — no Python, no Beautiful Soup, no code. Paste a URL, click **Fetch Tables**, pick the tables you want, and save them as spreadsheets.
 
 Built for getting to data quickly: sports stats, reference tables, anything rendered as an HTML `<table>`.
 
@@ -44,7 +44,9 @@ Instead of downloading raw HTML and parsing it (the Beautiful Soup approach), th
 - **Live preview** — see each table's columns and rows before exporting
 - **Pick what you want** — checkboxes per table, plus a **Select All / Deselect All** toggle
 - **Rename tables** — double-click a title to give the export a sensible filename
-- **CSV export** — RFC 4180–compliant, with a folder picker so you choose where files land
+- **CSV export** — RFC 4180–compliant, one file per table
+- **Excel export** — a single `.xlsx` workbook with one sheet per table; opens cleanly on Mac and Windows
+- **Choose where it lands** — pick a destination folder when you export
 - **Safe saves** — never overwrites an existing file (adds a numeric suffix instead)
 - **Optional web preview** — toggle a live view of the page while it loads
 
@@ -86,7 +88,26 @@ Practically: lighter on your battery and fans than keeping a browser full of tab
 2. Click **Fetch Tables** and wait for the page to load and render
 3. Review the tables that were found in the preview list
 4. Check the ones you want, optionally rename them
-5. Click **Export Selected** (or **Export All**) and choose a destination folder
+5. Click **Export CSV** or **Export Excel** and choose a destination folder
+
+## CSV or Excel? (and a note for Excel-for-Mac users)
+
+Both formats hold the same data — the difference is how cleanly they *open*, especially in **Excel for Mac**.
+
+**The Excel-for-Mac quirk:** a `.csv` is just text with commas, so Excel has to *guess* where the columns are when you double-click it. Excel for Windows guesses correctly (it uses your system's list separator). **Excel for Mac often guesses wrong** and dumps the whole row into a single column — the "cursed column of mush." That's a long-standing Excel-for-Mac limitation, not a problem with the file. (Numbers and Google Sheets open the same CSV fine.)
+
+A `.xlsx`, by contrast, stores every value in an **explicitly defined cell** — there's no delimiter to guess. So it opens with columns intact, identically, everywhere.
+
+**Which should you pick?**
+
+| Use… | When |
+| --- | --- |
+| **Excel (.xlsx)** | You're on **Excel for Mac**, or want it to "just open" correctly everywhere with no fuss. Also nicer when exporting several tables — they arrive as separate tabs in one workbook. |
+| **CSV** | You're feeding the data into code/tools (pandas, R, databases), opening in **Numbers or Google Sheets**, or want a plain-text file you can diff or script against. |
+
+**If you already have a CSV that opened as one column in Excel for Mac:** you don't need to re-export — just select column A and use **Data → Text to Columns → Delimited → Comma**, or open it via **Data → Get Data → From Text (CSV)**. Or simply export it as Excel instead.
+
+**Short version:** on a Mac, reach for **Excel (.xlsx)** when you just want to look at the data, and **CSV** when something else is going to read it.
 
 ## Bot checks & the Preview toggle
 
@@ -114,6 +135,7 @@ that occasionally throws up a verification step.
 | `ContentView.swift` | The SwiftUI interface — URL bar, table list, preview, export |
 | `WebViewFetcher.swift` | Loads the page in `WKWebView` and extracts tables from the DOM |
 | `CSVExporter.swift` | Turns extracted tables into CSV and saves them to disk |
+| `XLSXExporter.swift` | Builds a multi-sheet `.xlsx` workbook (dependency-free OOXML + ZIP writer) |
 | `Models.swift` | Data models for parsed tables and fetch state |
 
 ## Quirks & limitations
