@@ -58,6 +58,17 @@ Instead of downloading raw HTML and parsing it (the Beautiful Soup approach), th
 
 In short: a native Swift/SwiftUI macOS app, with a touch of JavaScript doing the actual table extraction inside the page.
 
+## Energy & resource use
+
+Being a native app, the footprint is **very low**:
+
+- **It only works when you do.** Real effort happens during a fetch — load the page, run its JavaScript, read the tables. The rest of the time the app just sits there, using next to nothing.
+- **No background processes.** No servers, daemons, syncing, or phone-home — nothing runs when the app is closed.
+- **No heavyweight runtimes.** It uses the browser engine already built into macOS (`WKWebView`) rather than bundling its own copy of Chromium (like an Electron app) or spinning up a Python environment. That means a smaller download, less memory, and lighter CPU use.
+- **The one brief spike** is while a page loads — the same work your normal browser does when you open that page — and it settles right back down once the tables are extracted.
+
+Practically: lighter on your battery and fans than keeping a browser full of tabs open to copy tables by hand.
+
 ## Requirements
 
 - macOS (Apple Silicon or Intel)
