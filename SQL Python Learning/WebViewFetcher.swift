@@ -88,6 +88,145 @@ class WebViewFetcher: NSObject, WKNavigationDelegate {
 
     private static let extractionScript = """
     (function() {
+        // Convert a camelCase, snake_case, or kebab-case string to Title Case
+        function formatName(str) {
+            return str
+                .replace(/([a-z])([A-Z])/g, '$1 $2')
+                .split(/[_\\-\\s]+/)
+                .filter(function(p) { return p.length > 0 && !/^\\d+$/.test(p); })
+                .map(function(p) { return p.charAt(0).toUpperCase() + p.slice(1).toLowerCase(); })
+                .join(' ');
+        }
+
+        // Find the best human-readable title for a table by checking, in order:
+        // caption, ARIA/data attributes, nearby title divs, preceding headings,
+        // ancestor headings/labels/active tabs, and finally ids/class names.
+        function detectTitle(table, resultIndex) {
+            var title = '';
+
+            // 1. <caption> inside the table
+            var caption = table.querySelector('caption');
+            if (caption) title = caption.textContent.trim();
+
+            // 2. aria-label, data-title, or summary on the table itself
+            if (!title) title = (table.getAttribute('aria-label') || '').trim();
+            if (!title) title = (table.getAttribute('data-title') || '').trim();
+            if (!title) title = (table.getAttribute('summary') || '').trim();
+
+            // 3. A title div in a nearby ancestor (e.g. ESPN's .Table__Title)
+            if (!title) {
+                var anc = table.parentElement;
+                var td = 0;
+                while (anc && td < 4) {
+                    var titleDiv = anc.querySelector(':scope > .Table__Title, :scope > .table-title, :scope > [class*="title" i]');
+                    if (titleDiv) {
+                        var txt = titleDiv.textContent.trim();
+                        if (txt && txt.length < 60) { title = txt; break; }
+                    }
+                    anc = anc.parentElement;
+                    td++;
+                }
+            }
+
+            // 4. A heading among the table's preceding siblings
+            if (!title) {
+                var prev = table.previousElementSibling;
+                var attempts = 0;
+                while (prev && attempts < 5) {
+                    if (/^H[1-6]$/.test(prev.tagName)) { title = prev.textContent.trim(); break; }
+                    var innerH = prev.querySelector('h1, h2, h3, h4, h5, h6');
+                    if (innerH) { title = innerH.textContent.trim(); break; }
+                    prev = prev.previousElementSibling;
+                    attempts++;
+                }
+            }
+
+            // 5. Walk up ancestors looking for headings, labels, or active tabs
+            if (!title) {
+                var ancestor = table.parentElement;
+                var depth = 0;
+                while (ancestor && depth < 8) {
+                    var aLabel = (ancestor.getAttribute('aria-label') || '').trim();
+                    if (aLabel) { title = aLabel; break; }
+                    var dTitle = (ancestor.getAttribute('data-title') || '').trim();
+                    if (dTitle) { title = dTitle; break; }
+
+                    // Headings that are direct children of this ancestor
+                    var directHeadings = ancestor.querySelectorAll(':scope > h1, :scope > h2, :scope > h3, :scope > h4, :scope > h5, :scope > h6');
+                    if (directHeadings.length > 0) {
+                        var best = null;
+                        for (var h = 0; h < directHeadings.length; h++) {
+                            if (table.compareDocumentPosition(directHeadings[h]) & 2) best = directHeadings[h];
+                        }
+                        title = (best || directHeadings[0]).textContent.trim();
+                        break;
+                    }
+
+                    // Any heading inside this ancestor not belonging to another table
+                    var deepHeadings = ancestor.querySelectorAll('h1, h2, h3, h4, h5, h6');
+                    if (deepHeadings.length > 0) {
+                        var bestDeep = null;
+                        for (var h2 = 0; h2 < deepHeadings.length; h2++) {
+                            var hdg = deepHeadings[h2];
+                            if (hdg.closest('table')) continue;
+                            if (table.compareDocumentPosition(hdg) & 2) bestDeep = hdg;
+                        }
+                        if (bestDeep) { title = bestDeep.textContent.trim(); break; }
+                        for (var h3 = 0; h3 < deepHeadings.length; h3++) {
+                            if (!deepHeadings[h3].closest('table')) { title = deepHeadings[h3].textContent.trim(); break; }
+                        }
+                        if (title) break;
+                    }
+
+                    // An active tab label
+                    var activeTab = ancestor.querySelector('.active[role="tab"], [aria-selected="true"], .tab.active, .nav-link.active');
+                    if (activeTab) { title = activeTab.textContent.trim(); break; }
+
+                    ancestor = ancestor.parentElement;
+                    depth++;
+                }
+            }
+
+            // 6. The table's own id, formatted
+            if (!title && table.id) title = formatName(table.id);
+
+            // 7. A descriptive ancestor id or class
+            if (!title) {
+                var anc2 = table.parentElement;
+                var ad = 0;
+                while (anc2 && ad < 6) {
+                    if (anc2.id && !/^(root|app|main|content|wrapper|container|page|body)$/i.test(anc2.id)) {
+                        title = formatName(anc2.id); break;
+                    }
+                    if (typeof anc2.className === 'string' && anc2.className) {
+                        var classes = anc2.className.split(/\\s+/).filter(function(c) {
+                            return c.length > 3 &&
+                                !/^(col|row|container|wrapper|section|div|block|content|main|page|app|flex|grid|responsive|pinned|scrollable)$/i.test(c) &&
+                                !/^(d|p|m|mt|mb|ml|mr|mx|my|pt|pb|pl|pr|px|py)-/i.test(c);
+                        });
+                        if (classes.length > 0) { title = formatName(classes[0]); break; }
+                    }
+                    anc2 = anc2.parentElement;
+                    ad++;
+                }
+            }
+
+            // 8. The table's own class names
+            if (!title && typeof table.className === 'string' && table.className) {
+                var tClasses = table.className.split(/\\s+/).filter(function(c) {
+                    return c.length > 2 && !/^(table|data|stats|responsive|striped|hover|bordered)$/i.test(c);
+                });
+                if (tClasses.length > 0) title = formatName(tClasses[0]);
+            }
+
+            // 9. Fallback — number the table
+            if (!title) title = 'Table ' + (resultIndex + 1);
+
+            title = title.replace(/\\s+/g, ' ').trim();
+            if (title.length > 100) title = title.substring(0, 100).trim();
+            return title;
+        }
+
         var results = [];
         var tables = document.querySelectorAll('table');
 
@@ -102,21 +241,9 @@ class WebViewFetcher: NSObject, WKNavigationDelegate {
             var rect = table.getBoundingClientRect();
             if (rect.width === 0 && rect.height === 0) continue;
 
-            // Determine title
-            var title = '';
-            var caption = table.querySelector('caption');
-            if (caption) {
-                title = caption.textContent.trim();
-            } else if (table.id) {
-                title = table.id
-                    .split(/[_-]/)
-                    .filter(function(p) { return !/^\\d+$/.test(p); })
-                    .map(function(p) { return p.charAt(0).toUpperCase() + p.slice(1); })
-                    .join(' ');
-            } else if (table.getAttribute('aria-label')) {
-                title = table.getAttribute('aria-label').trim();
-            }
-            if (!title) title = 'Table ' + (results.length + 1);
+            // Determine title (searches caption, ARIA labels, nearby
+            // headings, tab names, ids, and class names)
+            var title = detectTitle(table, results.length);
 
             // Extract headers from <thead>
             var headers = [];

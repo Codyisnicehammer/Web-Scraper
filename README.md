@@ -6,7 +6,7 @@ Built for getting to data quickly: sports stats, reference tables, anything rend
 
 ## Screenshots
 
-| Paste a URL to start | Tables extracted, ready to export |
+| Paste a URL to start | Tables extracted with detected names, ready to export |
 | --- | --- |
 | ![Empty state](screenshots/empty-state.png) | ![Results](screenshots/results.png) |
 
@@ -42,6 +42,25 @@ Instead of downloading raw HTML and parsing it (the Beautiful Soup approach), th
 3. Review the tables that were found in the preview list
 4. Check the ones you want, optionally rename them
 5. Click **Export Selected** (or **Export All**) and choose a destination folder
+
+## Bot checks & the Preview toggle
+
+Some sites (Cloudflare-protected pages like FBref, and others with anti-bot
+protection) put up a challenge — a "Verifying you are human" / "Just a moment…"
+screen — before the real page loads. When that happens, the app may find no
+tables, or only the challenge page's content.
+
+The fix is the **Preview** checkbox in the top-right:
+
+1. Turn on **Preview** to show the live web page while it loads.
+2. Click **Fetch Tables**. If a bot check appears, complete it in the preview
+   (e.g. tick the "I'm human" box) just like you would in a normal browser.
+3. Once the real page finishes loading, the tables will be extracted.
+
+Because the app uses a real browser engine (`WKWebView`), these challenges
+behave exactly as they do in Safari — so passing them once in the preview lets
+the page through. Leaving Preview on is the simplest way to handle any site
+that occasionally throws up a verification step.
 
 ## Project structure
 
