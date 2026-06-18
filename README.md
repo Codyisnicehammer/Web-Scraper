@@ -105,6 +105,18 @@ that occasionally throws up a verification step.
 | `CSVExporter.swift` | Turns extracted tables into CSV and saves them to disk |
 | `Models.swift` | Data models for parsed tables and fetch state |
 
+## Quirks & limitations
+
+It's a handy tool, not a magic wand — and it has its quirks. Expect to give some exports **a little cleanup** once they land in your spreadsheet:
+
+- **Some tables need a light tidy.** Stray footnote markers, icons, or odd spacing can ride along in a cell. Usually a quick find-and-replace in Excel sorts it out.
+- **Table names are best-guess.** The app sniffs out a title from nearby headings and labels, but when a page gives it nothing to work with, you'll get a generic "Table 3." (You can rename any table before exporting.)
+- **Column splitting isn't perfect.** Tables with merged cells, multi-row headers, or unusual layouts may come out slightly misaligned.
+- **JavaScript-heavy / protected sites can be fussy.** Pages behind bot checks may need the **Preview** toggle (see above), and very dynamic pages occasionally need a second fetch.
+- **It only sees real tables.** If a site fakes a table with plain `<div>`s and styling, there's nothing for the app to grab.
+
+None of this is a dealbreaker for everyday "I just need this table" jobs — it just means the occasional export benefits from a 30-second polish before you call it done.
+
 ## Notes
 
 This is a personal tool, built for quick, friendly table extraction rather than as a general-purpose scraping product. It works best on pages where the data lives in real HTML `<table>` elements.
