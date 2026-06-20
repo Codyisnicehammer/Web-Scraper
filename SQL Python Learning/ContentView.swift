@@ -68,7 +68,11 @@ struct ContentView: View {
             }
 
             // MARK: - Table List
-            if tables.isEmpty && fetchState != .loading {
+            if fetchState == .botChallenge {
+                Spacer()
+                botChallengeView
+                Spacer()
+            } else if tables.isEmpty && fetchState != .loading {
                 Spacer()
                 emptyStateView
                 Spacer()
@@ -112,6 +116,9 @@ struct ContentView: View {
         case .error(let message):
             Label(message, systemImage: "exclamationmark.triangle.fill")
                 .foregroundStyle(.red)
+        case .botChallenge:
+            Label("This site is showing a bot check — see below", systemImage: "hand.raised.fill")
+                .foregroundStyle(.orange)
         }
     }
 
@@ -131,6 +138,58 @@ struct ContentView: View {
                 .foregroundStyle(.tertiary)
                 .multilineTextAlignment(.center)
         }
+    }
+
+    // MARK: - Bot Challenge Prompt
+
+    @ViewBuilder
+    private var botChallengeView: some View {
+        VStack(spacing: 14) {
+            Image(systemName: "hand.raised.fill")
+                .font(.system(size: 44))
+                .foregroundStyle(.orange)
+
+            Text("No tables found — this site has a bot check")
+                .font(.title3.bold())
+                .multilineTextAlignment(.center)
+
+            if showWebPreview {
+                Text("Solve the “verify you are human” check in the preview above,\nthen click Retry once the real page loads.")
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+
+                Button {
+                    fetchTables()
+                } label: {
+                    Label("Retry", systemImage: "arrow.clockwise")
+                }
+                .controlSize(.large)
+                .keyboardShortcut("r", modifiers: .command)
+            } else {
+                Text("The page is asking to verify you're human before it loads.\nTurn on the live preview, clear the check, and try again.")
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+
+                Button {
+                    showWebPreview = true
+                    fetchTables()
+                } label: {
+                    Label("Show Preview & Retry", systemImage: "eye")
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+            }
+
+            Text("Tip: leave Preview on for sites like FBref that often show these checks.")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+                .multilineTextAlignment(.center)
+                .padding(.top, 4)
+        }
+        .padding(32)
+        .frame(maxWidth: 460)
     }
 
     // MARK: - Table Card
@@ -320,6 +379,8 @@ struct ContentView: View {
                     }
                     fetchState = .loaded
                 }
+            } catch WebViewFetcherError.botChallenge {
+                fetchState = .botChallenge
             } catch {
                 fetchState = .error("Fetch failed: \(error.localizedDescription)")
             }

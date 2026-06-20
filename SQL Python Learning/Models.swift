@@ -15,4 +15,6 @@ enum FetchState: Equatable {
     case loading
     case loaded
     case error(String)
+    /// No tables found and the page looks like a bot-check / verification wall.
+    case botChallenge
 }
