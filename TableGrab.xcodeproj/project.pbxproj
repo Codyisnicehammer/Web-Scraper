@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		D71307012FDDAFB100458FC6 /* Web Stats Scraper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Web Stats Scraper.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D71307012FDDAFB100458FC6 /* TableGrab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TableGrab.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		D71307032FDDAFB100458FC6 /* SQL Python Learning */ = {
+		D71307032FDDAFB100458FC6 /* TableGrab */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "SQL Python Learning";
+			path = TableGrab;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		D71306F82FDDAFB100458FC6 = {
 			isa = PBXGroup;
 			children = (
-				D71307032FDDAFB100458FC6 /* SQL Python Learning */,
+				D71307032FDDAFB100458FC6 /* TableGrab */,
 				D71307022FDDAFB100458FC6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -40,7 +40,7 @@
 		D71307022FDDAFB100458FC6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D71307012FDDAFB100458FC6 /* Web Stats Scraper.app */,
+				D71307012FDDAFB100458FC6 /* TableGrab.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		D71307002FDDAFB100458FC6 /* Web Stats Scraper */ = {
+		D71307002FDDAFB100458FC6 /* TableGrab */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D713070C2FDDAFB300458FC6 /* Build configuration list for PBXNativeTarget "Web Stats Scraper" */;
+			buildConfigurationList = D713070C2FDDAFB300458FC6 /* Build configuration list for PBXNativeTarget "TableGrab" */;
 			buildPhases = (
 				D71306FD2FDDAFB100458FC6 /* Sources */,
 				D71306FE2FDDAFB100458FC6 /* Frameworks */,
@@ -61,13 +61,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				D71307032FDDAFB100458FC6 /* SQL Python Learning */,
+				D71307032FDDAFB100458FC6 /* TableGrab */,
 			);
-			name = "Web Stats Scraper";
+			name = TableGrab;
 			packageProductDependencies = (
 			);
 			productName = "SQL Python Learning";
-			productReference = D71307012FDDAFB100458FC6 /* Web Stats Scraper.app */;
+			productReference = D71307012FDDAFB100458FC6 /* TableGrab.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -78,14 +78,14 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2630;
-				LastUpgradeCheck = 2630;
+				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					D71307002FDDAFB100458FC6 = {
 						CreatedOnToolsVersion = 26.3;
 					};
 				};
 			};
-			buildConfigurationList = D71306FC2FDDAFB100458FC6 /* Build configuration list for PBXProject "Web Stats Scraper" */;
+			buildConfigurationList = D71306FC2FDDAFB100458FC6 /* Build configuration list for PBXProject "TableGrab" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D71307002FDDAFB100458FC6 /* Web Stats Scraper */,
+				D71307002FDDAFB100458FC6 /* TableGrab */,
 			);
 		};
 /* End PBXProject section */
@@ -159,6 +159,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 2KZUPGG525;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -184,6 +185,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -223,6 +225,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 2KZUPGG525;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -241,6 +244,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
@@ -253,6 +257,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 3;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 2KZUPGG525;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
@@ -270,7 +275,7 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Web Stats Scrapers";
+				INFOPLIST_KEY_CFBundleDisplayName = TableGrab;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -279,7 +284,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 3.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "MJ.SQL-Python-Learning";
+				PRODUCT_BUNDLE_IDENTIFIER = MJ.TableGrab;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -299,6 +304,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 3;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 2KZUPGG525;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
@@ -316,7 +322,7 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Web Stats Scrapers";
+				INFOPLIST_KEY_CFBundleDisplayName = TableGrab;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -325,7 +331,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 3.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "MJ.SQL-Python-Learning";
+				PRODUCT_BUNDLE_IDENTIFIER = MJ.TableGrab;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -340,7 +346,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		D71306FC2FDDAFB100458FC6 /* Build configuration list for PBXProject "Web Stats Scraper" */ = {
+		D71306FC2FDDAFB100458FC6 /* Build configuration list for PBXProject "TableGrab" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D713070A2FDDAFB300458FC6 /* Debug */,
@@ -349,7 +355,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D713070C2FDDAFB300458FC6 /* Build configuration list for PBXNativeTarget "Web Stats Scraper" */ = {
+		D713070C2FDDAFB300458FC6 /* Build configuration list for PBXNativeTarget "TableGrab" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D713070D2FDDAFB300458FC6 /* Debug */,
