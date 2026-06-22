@@ -10,3 +10,4 @@ DerivedData/
 # Exported / archived app builds
 *.app/
 SQL Python Learning */
+releases/
