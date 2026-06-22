@@ -49,6 +49,7 @@ Instead of downloading raw HTML and parsing it (the Beautiful Soup approach), th
 - **Choose where it lands** — pick a destination folder when you export
 - **Safe saves** — never overwrites an existing file (adds a numeric suffix instead)
 - **Optional web preview** — toggle a live view of the page while it loads
+- **Bot-check aware** — detects "verify you're human" walls (Cloudflare, captchas) and guides you to clear them, even when localized
 
 ## Built with
 
@@ -118,17 +119,24 @@ protection) put up a challenge — a "Verifying you are human" / "Just a moment�
 screen — before the real page loads. When that happens, the app may find no
 tables, or only the challenge page's content.
 
-The fix is the **Preview** checkbox in the top-right:
+**The app detects this for you.** When a fetch comes back empty *and* the page
+looks like a bot/human-verification wall, instead of a plain "No tables found"
+you'll get a clear prompt with a **Show Preview & Retry** button. (Detection is
+language-independent, so it works even when the challenge shows up localized —
+e.g. "Un instant…" instead of "Just a moment…".)
 
-1. Turn on **Preview** to show the live web page while it loads.
-2. Click **Fetch Tables**. If a bot check appears, complete it in the preview
-   (e.g. tick the "I'm human" box) just like you would in a normal browser.
-3. Once the real page finishes loading, the tables will be extracted.
+To get through the wall:
+
+1. Click **Show Preview & Retry** (or just turn on the **Preview** checkbox
+   top-right) to show the live web page while it loads.
+2. Complete the check in the preview (e.g. tick the "I'm human" box) just like
+   you would in a normal browser.
+3. Once the real page finishes loading, the tables are extracted.
 
 Because the app uses a real browser engine (`WKWebView`), these challenges
 behave exactly as they do in Safari — so passing them once in the preview lets
 the page through. Leaving Preview on is the simplest way to handle any site
-that occasionally throws up a verification step.
+that regularly throws up a verification step.
 
 ## Project structure
 
