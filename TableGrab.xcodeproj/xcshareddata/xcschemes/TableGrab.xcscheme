@@ -18,7 +18,7 @@
                BlueprintIdentifier = "D71307002FDDAFB100458FC6"
                BuildableName = "TableGrab.app"
                BlueprintName = "TableGrab"
-               ReferencedContainer = "container:Web Stats Scraper.xcodeproj">
+               ReferencedContainer = "container:TableGrab.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -56,7 +56,7 @@
             BlueprintIdentifier = "D71307002FDDAFB100458FC6"
             BuildableName = "TableGrab.app"
             BlueprintName = "TableGrab"
-            ReferencedContainer = "container:Web Stats Scraper.xcodeproj">
+            ReferencedContainer = "container:TableGrab.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -73,7 +73,7 @@
             BlueprintIdentifier = "D71307002FDDAFB100458FC6"
             BuildableName = "TableGrab.app"
             BlueprintName = "TableGrab"
-            ReferencedContainer = "container:Web Stats Scraper.xcodeproj">
+            ReferencedContainer = "container:TableGrab.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <MacroExpansion>
@@ -82,7 +82,7 @@
             BlueprintIdentifier = "D71307002FDDAFB100458FC6"
             BuildableName = "TableGrab.app"
             BlueprintName = "TableGrab"
-            ReferencedContainer = "container:Web Stats Scraper.xcodeproj">
+            ReferencedContainer = "container:TableGrab.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
