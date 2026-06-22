@@ -8,6 +8,14 @@ struct ExtractedTable: Codable, Sendable {
     let rows: [[String]]
 }
 
+/// Errors surfaced by the fetcher that the UI handles specially.
+enum WebViewFetcherError: Error {
+    /// No tables were found and the page looks like a bot-check / human-verification
+    /// challenge (e.g. Cloudflare "Just a moment…"). The user should solve it in
+    /// the Preview pane and retry.
+    case botChallenge
+}
+
 /// Uses a WKWebView to load a URL, execute all JavaScript, then extract
 /// table data directly from the rendered DOM using the browser's own
 /// DOM API — the Swift equivalent of Beautiful Soup.
@@ -326,6 +334,51 @@ class WebViewFetcher: NSObject, WKNavigationDelegate {
     })();
     """;
 
+    /// Detects whether the current page is a bot-check / human-verification
+    /// challenge (Cloudflare, hCaptcha, reCAPTCHA, etc.) rather than real content.
+    /// Returns true when the page looks like a challenge wall.
+    private static let botCheckScript = """
+    (function() {
+        // 1. Language-independent structural signals (most reliable).
+        //    Cloudflare challenge pages define window._cf_chl_opt and load a
+        //    script from /cdn-cgi/challenge-platform/ — true regardless of the
+        //    page's language.
+        try { if (typeof window._cf_chl_opt !== 'undefined') return true; } catch (e) {}
+        if (document.querySelector('script[src*="/cdn-cgi/challenge-platform/"]')) return true;
+
+        // 2. Challenge / captcha widgets and containers.
+        if (document.querySelector('#challenge-running, #cf-challenge-running, #challenge-form, #challenge-stage, #challenge-error-text, .cf-browser-verification, #cf-please-wait, .cf-turnstile, iframe[src*="challenges.cloudflare.com"], iframe[src*="recaptcha"], iframe[src*="hcaptcha"], iframe[title*="challenge" i]')) {
+            return true;
+        }
+
+        // 3. Text phrases as a backup, across common languages.
+        var title = (document.title || '').toLowerCase();
+        var bodyText = (document.body ? document.body.innerText : '').toLowerCase().slice(0, 4000);
+        var hay = title + ' ' + bodyText;
+        var phrases = [
+            // English
+            'just a moment', 'verifying you are human', 'verify you are human',
+            'checking your browser', 'checking if the site connection is secure',
+            'attention required', 'enable javascript and cookies',
+            'needs to review the security of your connection', 'ddos protection by',
+            'please verify you are a human', 'complete the security check', 'are you a robot',
+            'malicious bots',
+            // French
+            'un instant', 'vérification de sécurité', 'verification de securite', 'bot malveillant',
+            // Spanish
+            'un momento', 'verificando que eres humano', 'comprobando',
+            // German
+            'einen moment', 'sicherheitsüberprüfung', 'überprüfung läuft',
+            // Italian / Portuguese
+            'un attimo', 'verifica di sicurezza', 'verificando se você é humano'
+        ];
+        for (var i = 0; i < phrases.length; i++) {
+            if (hay.indexOf(phrases[i]) !== -1) return true;
+        }
+        return false;
+    })();
+    """
+
     private func extractTables() async {
         do {
             let result = try await webView.evaluateJavaScript(
@@ -341,6 +394,19 @@ class WebViewFetcher: NSObject, WKNavigationDelegate {
             }
 
             let tables = try JSONDecoder().decode([ExtractedTable].self, from: jsonData)
+
+            // If nothing was found, check whether a bot-check wall is blocking
+            // the real content so the UI can prompt the user to solve it.
+            if tables.isEmpty {
+                let botResult = try? await webView.evaluateJavaScript(
+                    Self.botCheckScript, in: nil, contentWorld: .page
+                )
+                if (botResult as? Bool) == true {
+                    resumeContinuation(with: .failure(WebViewFetcherError.botChallenge))
+                    return
+                }
+            }
+
             resumeContinuation(with: .success(tables))
         } catch {
             resumeContinuation(with: .failure(error))
