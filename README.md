@@ -83,6 +83,20 @@ Practically: lighter on your battery and fans than keeping a browser full of tab
 2. Select the **Web Stats Scraper** scheme
 3. Build and run (⌘R)
 
+### Packaging a shareable `.dmg`
+
+To hand the app to someone else, export it from Xcode (**Product → Archive →
+Distribute App → Custom → Copy App**), then run:
+
+```bash
+./make-dmg.sh "/path/to/Web Stats Scraper.app"
+```
+
+This produces a compressed `Web Stats Scraper <version>.dmg` (with a
+drag-to-Applications shortcut) next to the app. The build is **unsigned**, so on
+first launch the recipient should **right-click the app → Open** (or use
+**System Settings → Privacy & Security → Open Anyway**) — a one-time step.
+
 ## Usage
 
 1. Paste a URL into the field at the top (e.g. a stats or reference page)
