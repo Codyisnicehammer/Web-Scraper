@@ -74,21 +74,20 @@ Practically: lighter on your battery and fans than keeping a browser full of tab
 
 ## Install
 
-This is a personal project, so it's shared **directly** rather than offered as a
-public download — grab the `Web Stats Scraper <version>.dmg` from whoever shared
-it with you (AirDrop, email, or the repo's Releases tab if you've been given
-access).
-
-Then:
-
-1. Open the `.dmg` and **drag Web Stats Scraper into Applications**.
-2. **First launch only:** right-click the app → **Open** → **Open** (or go to
+1. Download the latest **`Web Stats Scraper <version>.dmg`** from the
+   [**Releases page**](https://github.com/Codyisnicehammer/Web-Scraper/releases/latest).
+2. Open the `.dmg` and **drag Web Stats Scraper into Applications**.
+3. **First launch only:** right-click the app → **Open** → **Open** (or go to
    **System Settings → Privacy & Security → Open Anyway**). This is a one-time
    step because the app isn't signed with a paid Apple Developer certificate;
    after that it opens normally.
 
 Works on both **Apple Silicon and Intel** Macs. No installer, no account, nothing
 runs in the background.
+
+> This is a private repo, so the Releases download is available to you and anyone
+> you've invited as a collaborator. To share with someone else, just send them
+> the `.dmg` directly (AirDrop, email, etc.).
 
 ## Usage
 
