@@ -72,30 +72,18 @@ Being a native app, the footprint is **very low**:
 
 Practically: lighter on your battery and fans than keeping a browser full of tabs open to copy tables by hand.
 
-## Requirements
+## Install
 
-- macOS (Apple Silicon or Intel)
-- Xcode (to build from source)
+1. Download the latest **`Web Stats Scraper <version>.dmg`** from the
+   [**Releases page**](https://github.com/Codyisnicehammer/Web-Scraper/releases/latest).
+2. Open the `.dmg` and **drag Web Stats Scraper into Applications**.
+3. **First launch only:** right-click the app → **Open** → **Open** (or go to
+   **System Settings → Privacy & Security → Open Anyway**). This is a one-time
+   step because the app isn't signed with a paid Apple Developer certificate;
+   after that it opens normally.
 
-## Building
-
-1. Open `Web Stats Scraper.xcodeproj` in Xcode
-2. Select the **Web Stats Scraper** scheme
-3. Build and run (⌘R)
-
-### Packaging a shareable `.dmg`
-
-To hand the app to someone else, export it from Xcode (**Product → Archive →
-Distribute App → Custom → Copy App**), then run:
-
-```bash
-./make-dmg.sh "/path/to/Web Stats Scraper.app"
-```
-
-This produces a compressed `Web Stats Scraper <version>.dmg` (with a
-drag-to-Applications shortcut) next to the app. The build is **unsigned**, so on
-first launch the recipient should **right-click the app → Open** (or use
-**System Settings → Privacy & Security → Open Anyway**) — a one-time step.
+Works on both **Apple Silicon and Intel** Macs. No installer, no account, nothing
+runs in the background.
 
 ## Usage
 
@@ -161,6 +149,22 @@ that regularly throws up a verification step.
 | `CSVExporter.swift` | Turns extracted tables into CSV and saves them to disk |
 | `XLSXExporter.swift` | Builds a multi-sheet `.xlsx` workbook (dependency-free OOXML + ZIP writer) |
 | `Models.swift` | Data models for parsed tables and fetch state |
+
+## Building from source (developers)
+
+Requires macOS + Xcode.
+
+1. Open `Web Stats Scraper.xcodeproj` in Xcode
+2. Select the **Web Stats Scraper** scheme and build/run (⌘R)
+
+To package a shareable `.dmg`, export the app (**Product → Archive → Distribute
+App → Custom → Copy App**) and run the included script:
+
+```bash
+./make-dmg.sh "/path/to/Web Stats Scraper.app"
+```
+
+It produces a compressed, drag-to-Applications `Web Stats Scraper <version>.dmg`.
 
 ## Quirks & limitations
 
