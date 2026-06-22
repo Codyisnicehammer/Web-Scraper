@@ -89,6 +89,13 @@ runs in the background.
 > you've invited as a collaborator. To share with someone else, just send them
 > the `.dmg` directly (AirDrop, email, etc.).
 
+**A note on the "Local Network" prompt:** macOS may ask whether TableGrab can
+"find and connect to devices on your local network." TableGrab does **not** scan
+for or connect to your devices — it only fetches the public web pages you paste
+in. This is a generic prompt newer macOS shows for any app that uses the network.
+You can safely click **Don't Allow**; fetching websites still works (that's
+internet access, which is separate from local-network access).
+
 ## Usage
 
 1. Paste a URL into the field at the top (e.g. a stats or reference page)
