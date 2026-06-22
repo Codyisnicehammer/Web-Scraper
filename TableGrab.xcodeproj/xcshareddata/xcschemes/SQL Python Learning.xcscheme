@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "2630"
-   version = "1.7">
+   LastUpgradeVersion = "2700"
+   version = "2.2">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES"
@@ -16,10 +16,19 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D71307002FDDAFB100458FC6"
-               BuildableName = "Web Stats Scraper.app"
-               BlueprintName = "Web Stats Scraper"
+               BuildableName = "TableGrab.app"
+               BlueprintName = "TableGrab"
                ReferencedContainer = "container:Web Stats Scraper.xcodeproj">
             </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <AutocreatedTestPlanReference>
+            </AutocreatedTestPlanReference>
          </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
@@ -45,8 +54,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D71307002FDDAFB100458FC6"
-            BuildableName = "Web Stats Scraper.app"
-            BlueprintName = "Web Stats Scraper"
+            BuildableName = "TableGrab.app"
+            BlueprintName = "TableGrab"
             ReferencedContainer = "container:Web Stats Scraper.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -62,11 +71,20 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D71307002FDDAFB100458FC6"
-            BuildableName = "Web Stats Scraper.app"
-            BlueprintName = "Web Stats Scraper"
+            BuildableName = "TableGrab.app"
+            BlueprintName = "TableGrab"
             ReferencedContainer = "container:Web Stats Scraper.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "D71307002FDDAFB100458FC6"
+            BuildableName = "TableGrab.app"
+            BlueprintName = "TableGrab"
+            ReferencedContainer = "container:Web Stats Scraper.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

@@ -1,4 +1,4 @@
-# Web Stats Scraper
+# TableGrab
 
 A native macOS app that pulls HTML tables off any web page and exports them as **CSV or Excel (.xlsx)** — no Python, no Beautiful Soup, no code. Paste a URL, click **Fetch Tables**, pick the tables you want, and save them as spreadsheets.
 
@@ -74,9 +74,9 @@ Practically: lighter on your battery and fans than keeping a browser full of tab
 
 ## Install
 
-1. Download the latest **`Web Stats Scraper <version>.dmg`** from the
+1. Download the latest **`TableGrab <version>.dmg`** from the
    [**Releases page**](https://github.com/Codyisnicehammer/Web-Scraper/releases/latest).
-2. Open the `.dmg` and **drag Web Stats Scraper into Applications**.
+2. Open the `.dmg` and **drag TableGrab into Applications**.
 3. **First launch only:** right-click the app → **Open** → **Open** (or go to
    **System Settings → Privacy & Security → Open Anyway**). This is a one-time
    step because the app isn't signed with a paid Apple Developer certificate;
@@ -158,17 +158,17 @@ that regularly throws up a verification step.
 
 Requires macOS + Xcode.
 
-1. Open `Web Stats Scraper.xcodeproj` in Xcode
-2. Select the **Web Stats Scraper** scheme and build/run (⌘R)
+1. Open `TableGrab.xcodeproj` in Xcode
+2. Select the **TableGrab** scheme and build/run (⌘R)
 
 To package a shareable `.dmg`, export the app (**Product → Archive → Distribute
 App → Custom → Copy App**) and run the included script:
 
 ```bash
-./make-dmg.sh "/path/to/Web Stats Scraper.app"
+./make-dmg.sh "/path/to/TableGrab.app"
 ```
 
-It produces a compressed, drag-to-Applications `Web Stats Scraper <version>.dmg`.
+It produces a compressed, drag-to-Applications `TableGrab <version>.dmg`.
 
 ## Quirks & limitations
 
