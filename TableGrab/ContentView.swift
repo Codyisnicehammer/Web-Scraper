@@ -375,6 +375,11 @@ struct ContentView: View {
             }
             .disabled(selectedCount == 0)
 
+            Button("Export TSV (\(selectedCount))") {
+                exportTSV(tables.filter(\.isSelected))
+            }
+            .disabled(selectedCount == 0)
+
             Spacer()
 
             if showExportSuccess {
@@ -445,6 +450,41 @@ struct ContentView: View {
                     let table = ParsedTable(title: snapshot.title, headers: snapshot.headers, rows: snapshot.rows)
                     let csv = CSVExporter.generateCSV(from: table)
                     try CSVExporter.save(csv: csv, filename: snapshot.title, to: destination)
+                }
+
+                let folderName = destination.lastPathComponent
+                await MainActor.run {
+                    lastExportPath = folderName
+                    showExportSuccess = true
+                }
+
+                try? await Task.sleep(for: .seconds(4))
+                await MainActor.run {
+                    showExportSuccess = false
+                }
+            } catch {
+                await MainActor.run {
+                    fetchState = .error("Export failed: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+    /// Exports the given tables as TSV (tab-separated) files — one file per
+    /// table — into a user-chosen folder.
+    private func exportTSV(_ tablesToExport: [ParsedTable]) {
+        guard !tablesToExport.isEmpty else { return }
+
+        guard let destination = chooseExportFolder(fileCount: tablesToExport.count) else { return }
+
+        let snapshots = tablesToExport.map { (title: $0.title, headers: $0.headers, rows: $0.rows) }
+
+        Task.detached(priority: .userInitiated) {
+            do {
+                for snapshot in snapshots {
+                    let table = ParsedTable(title: snapshot.title, headers: snapshot.headers, rows: snapshot.rows)
+                    let tsv = TSVExporter.generateTSV(from: table)
+                    try TSVExporter.save(tsv: tsv, filename: snapshot.title, to: destination)
                 }
 
                 let folderName = destination.lastPathComponent
