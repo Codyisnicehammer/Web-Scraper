@@ -7,11 +7,26 @@ import AppKit
 struct WebViewRepresentable: NSViewRepresentable {
     let webView: WKWebView
 
-    func makeNSView(context: Context) -> WKWebView {
-        return webView
+    /// Wrap the shared web view in a plain container managed by Auto Layout.
+    /// Returning the live `WKWebView` directly lets its (fixed-frame, still
+    /// rendering) layout fight SwiftUI's `NSHostingView`, which can spin the
+    /// view graph into a continuous update loop and hang the app. Pinning it
+    /// inside a container decouples the web view's sizing from SwiftUI.
+    func makeNSView(context: Context) -> NSView {
+        let container = NSView()
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        webView.removeFromSuperview()
+        container.addSubview(webView)
+        NSLayoutConstraint.activate([
+            webView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            webView.topAnchor.constraint(equalTo: container.topAnchor),
+            webView.bottomAnchor.constraint(equalTo: container.bottomAnchor)
+        ])
+        return container
     }
 
-    func updateNSView(_ nsView: WKWebView, context: Context) {}
+    func updateNSView(_ nsView: NSView, context: Context) {}
 }
 
 // MARK: - Main View
