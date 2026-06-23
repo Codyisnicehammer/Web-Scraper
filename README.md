@@ -138,6 +138,8 @@ you'll get a clear prompt with a **Show Preview & Retry** button. (Detection is
 language-independent, so it works even when the challenge shows up localized —
 e.g. "Un instant…" instead of "Just a moment…".)
 
+![Bot-check prompt](screenshots/bot-check.png)
+
 To get through the wall:
 
 1. Click **Show Preview & Retry** (or just turn on the **Preview** checkbox
