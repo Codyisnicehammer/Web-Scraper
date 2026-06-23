@@ -282,18 +282,31 @@ struct ContentView: View {
     @ViewBuilder
     private func tablePreview(_ table: ParsedTable) -> some View {
         let maxPreviewRows = 10
+        let maxPreviewCols = 12
+        // Bound both dimensions so a very wide or tall table can't blow up
+        // SwiftUI's layout (the full data is still exported in full).
+        let colCount = max(table.headers.count, table.rows.first?.count ?? 0)
+        let shownCols = min(colCount, maxPreviewCols)
+        let extraCols = colCount - shownCols
 
         ScrollView(.horizontal, showsIndicators: true) {
             VStack(alignment: .leading, spacing: 0) {
                 // Header row
                 if !table.headers.isEmpty {
                     HStack(spacing: 0) {
-                        ForEach(Array(table.headers.enumerated()), id: \.offset) { _, header in
-                            Text(header)
+                        ForEach(0..<shownCols, id: \.self) { i in
+                            Text(i < table.headers.count ? table.headers[i] : "")
                                 .font(.caption.bold())
                                 .frame(minWidth: 100, alignment: .leading)
                                 .padding(6)
                                 .background(Color(nsColor: .unemphasizedSelectedContentBackgroundColor))
+                        }
+                        if extraCols > 0 {
+                            Text("+\(extraCols) more")
+                                .font(.caption.bold())
+                                .foregroundStyle(.secondary)
+                                .frame(minWidth: 80, alignment: .leading)
+                                .padding(6)
                         }
                     }
                 }
@@ -301,15 +314,29 @@ struct ContentView: View {
                 // Data rows
                 ForEach(Array(table.rows.prefix(maxPreviewRows).enumerated()), id: \.offset) { _, row in
                     HStack(spacing: 0) {
-                        ForEach(Array(row.enumerated()), id: \.offset) { _, cell in
-                            Text(cell)
+                        ForEach(0..<shownCols, id: \.self) { i in
+                            Text(i < row.count ? row[i] : "")
                                 .font(.caption)
                                 .lineLimit(2)
                                 .frame(minWidth: 100, alignment: .leading)
                                 .padding(6)
                         }
+                        if extraCols > 0 {
+                            Text("…")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .frame(minWidth: 80, alignment: .leading)
+                                .padding(6)
+                        }
                     }
                     Divider()
+                }
+
+                if extraCols > 0 {
+                    Text("… and \(extraCols) more column\(extraCols == 1 ? "" : "s") (full data is exported)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .padding(6)
                 }
 
                 if table.rows.count > maxPreviewRows {
